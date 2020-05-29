@@ -58,7 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsciiFilter.cs" />
-    <Compile Include="BmpPixelSnoop.cs" />
+    <Compile Include="BmpSnoopPixel.cs" />
     <Compile Include="FrameBuffer.cs" />
     <Compile Include="Notepad.cs" />
     <Compile Include="Program.cs" />

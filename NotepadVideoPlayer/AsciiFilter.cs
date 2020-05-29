@@ -37,35 +37,40 @@ namespace NotepadVideoPlayer
             Boolean toggle = false;
 
             StringBuilder sb = new StringBuilder();
-            for (int h = 0; h < image.Height; h++)
+
+            using(var snoop = new BmpPixelSnoop(image))
             {
-                for (int w = 0; w < image.Width; w++)
+                for (int h = 0; h < image.Height; h++)
                 {
-                    Color pixelColor = image.GetPixel(w, h);
+                    int width = image.Width;
+                    for (int w = 0; w < width; w++)
+                    {
+                        Color pixelColor = snoop.GetPixel(w, h);
 
-                    //Average out the RGB components to find the Gray Color
-                    int red = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
-                    int green = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
-                    int blue = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
-                    Color grayColor = Color.FromArgb(red, green, blue);
+                        //Average out the RGB components to find the Gray Color
+                        int red = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
+                        int green = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
+                        int blue = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
+                        Color grayColor = Color.FromArgb(red, green, blue);
 
-                    //Use the toggle flag to minimize height-wise stretch
+                        //Use the toggle flag to minimize height-wise stretch
+                        if (!toggle)
+                        {
+                            int index = (grayColor.R * 10) / 255;
+                            sb.Append(_AsciiChars[index]);
+                        }
+                    }
+
                     if (!toggle)
                     {
-                        int index = (grayColor.R * 10) / 255;
-                        sb.Append(_AsciiChars[index]);
+                        sb.Append("\r\n");
+                        toggle = true;
                     }
-                }
 
-                if (!toggle)
-                {
-                    sb.Append("\r\n");
-                    toggle = true;
-                }
-
-                else
-                {
-                    toggle = false;
+                    else
+                    {
+                        toggle = false;
+                    }
                 }
             }
             return sb.ToString();

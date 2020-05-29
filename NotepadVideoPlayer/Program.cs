@@ -37,13 +37,13 @@ namespace NotepadVideoPlayer
             string frame = "";
             while (frame != null)
             {
-                Thread.Sleep(frameTime);
+                //Thread.Sleep(frameTime);
                 frame = frameBuffer.GetNextFrame();
                 notepad.setText(frame);
             }
 
             Console.WriteLine(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - startTime);
-            Thread.Sleep(1000);
+            Thread.Sleep(10000);
         }
     }
 }
