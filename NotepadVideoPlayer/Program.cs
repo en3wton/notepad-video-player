@@ -21,29 +21,40 @@ namespace NotepadVideoPlayer
             Notepad notepad = new Notepad();
 
             // initialise frame provider
-            VideoFrameProvider vfp = new VideoFrameProvider("C:/Users/ellio/Downloads/test.mp4");
-        
+            VideoFrameProvider vfp = new VideoFrameProvider("C:/Users/ellio/Downloads/test.mkv");
+
             // calculate frame time
             Console.WriteLine(vfp.FrameRate + " fps");
-            int frameTime = (int)(1000 / vfp.FrameRate);
-            Console.WriteLine(frameTime + " ms");
+            int frameTime = (int)(10000000 / vfp.FrameRate);
+            var interval = new TimeSpan(frameTime);
 
             // initialise ascii filter and framebuffer
-            AsciiFilter filter = new AsciiFilter(vfp, (float).2);
+            AsciiFilter filter = new AsciiFilter(vfp, (float).05);
             FrameBuffer frameBuffer = new FrameBuffer(filter, 30);
 
-            long startTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            // measure time
+            var watch = System.Diagnostics.Stopwatch.StartNew();
 
+            var nextTick = DateTime.Now + interval;
             string frame = "";
             while (frame != null)
             {
-                //Thread.Sleep(frameTime);
+                while(DateTime.Now < nextTick)
+                {
+                    // do nothing
+                }
+                nextTick += interval;
+
                 frame = frameBuffer.GetNextFrame();
                 notepad.setText(frame);
+                nextTick += interval;
             }
 
-            Console.WriteLine(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - startTime);
-            Thread.Sleep(10000);
+            watch.Stop();
+            Console.WriteLine(watch.ElapsedMilliseconds + " milliseconds");
+
+            // keep window open
+            Console.ReadLine();
         }
     }
 }
